@@ -131,9 +131,6 @@ def test_b():
 
 def test_c():
 
-    g = Grid(6)
-
-
     r = """
 addkoo
 aeekpp
@@ -166,7 +163,8 @@ q  6 *
 
     rr = r.split('\n')[1:-1]
 
-    assert len(rr) == g.n
+    g = Grid( len(rr))
+
     assert all( [len(q) == g.n for q in rr])
 
     ee = e.split('\n')[1:-1]
@@ -195,13 +193,10 @@ q  6 *
     for k in tbl2.keys():
         assert k in tbl
 
-    for k in tbl.keys():
-        assert k in tbl2
-            
-
-    for k in tbl.keys():
+    for (k,lst) in tbl.items():
+        assert k in  tbl2
         op, value = tbl2[k]
-        g.add_cluster( op, value, tbl[k])
+        g.add_cluster( op, value, lst)
 
 
     run(g)
