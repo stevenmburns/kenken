@@ -1,0 +1,37 @@
+version: 2.1
+
+executors:
+  docker-executor:
+    docker:
+      - image: docker:18.06.3-ce-git
+
+jobs:
+  build:
+    executor: docker-executor
+    steps:
+      - checkout
+      - setup_remote_docker
+
+      - run: |
+          docker build -f Dockerfile -t kenken_image .
+          docker run --name kenken_container kenken_image bash -c "source /general/bin/activate && cd kenken && coverage run --source=kenken,tests setup.py test && coverage html && coverage xml && coverage-badge -o htmlcov/coverage.svg && mkdir -p /test-reports/kenken && cp /kenken/junit.xml /test-reports/kenken && mkdir -p /coverage-reports/kenken && cp -r /kenken/coverage.xml /kenken/htmlcov /coverage-reports/kenken"
+          cd -
+          docker cp kenken_container:coverage-reports .
+          docker cp kenken_container:test-reports .
+          docker rm kenken_container
+
+      - store_test_results:
+          path: test-reports
+
+      - store_artifacts:
+          path: test-reports
+
+      - store_artifacts:
+          path: coverage-reports
+
+workflows:
+  version: 2.1
+
+  full:
+    jobs:
+      - build
