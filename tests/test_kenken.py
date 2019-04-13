@@ -1,5 +1,5 @@
 
-from kenken import *
+from kenken.kenken import *
 
 
 def test_a():
