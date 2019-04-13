@@ -14,7 +14,7 @@ def test_a():
     g.add_cluster( '-',  1, [(0,3),(1,3)])
     g.add_cluster( '-',  1, [(2,3),(3,3)])
 
-    run(g)
+    g.run()
 
 def test_a1():
     r = """
@@ -35,7 +35,7 @@ g 1 -
 h 1 -
 """
 
-    parse_and_run( r, e)
+    Grid.parse_and_run( r, e)
 
 def test_b():
 
@@ -63,7 +63,7 @@ def test_b():
     g.add_cluster( '*',  6, [(3,5),(4,5)])
 
 
-    run(g)
+    g.run()
 
 
 
@@ -98,7 +98,57 @@ o  2 /
 p  3 /
 q  6 *
 """
-    parse_and_run( r, e)
+    Grid.parse_and_run( r, e)
+
+def test_c1():
+
+    r = """
+adddkl
+aafdkl
+bbfhhm
+cbgiim
+cbgijn
+ceejjn
+"""
+
+    e = """
+a 15 +
+b 90 *
+c  8 *
+d 16 *
+e  1 -
+f 11 +
+g  3 /
+h  4 -
+i 11 +
+j 12 +
+k  2 -
+l  3 /
+m  1 -
+n  3 /
+"""
+    Grid.parse_and_run( r, e)
+
+def test_d1():
+
+    r = """
+aaeg
+bdeg
+bcfh
+ccfh
+"""
+
+    e = """
+a 5 +
+b 5 +
+c 9 +
+d 1 +
+e 7 +
+f 3 +
+g 5 +
+h 5 +
+"""
+    Grid.parse_and_run( r, e)
 
 
 
