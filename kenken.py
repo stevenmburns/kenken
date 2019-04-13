@@ -2,6 +2,7 @@
 from tally.tally import *
 import itertools
 import functools
+import collections
 import re
 
 class Grid:
@@ -61,6 +62,7 @@ def run( g):
                     ok.append( q)
             elif op == '/':
                 if q[0] * value == q[1] or q[1] * value == q[0]:
+                    pass
                     ok.append( q)
             elif op == '-':
                 if q[0] + value == q[1] or q[1] + value == q[0]:
@@ -85,82 +87,27 @@ def run( g):
             print( [ i+1 for i in range(g.n) if s.h[matrix[(x,y)][i]]][0], end='')
         print()
 
-
-def test_a():
-
-    g = Grid(4)
-    g.add_cluster( '/',  2, [(0,0),(1,0)])
-    g.add_cluster( '+',  6, [(2,0),(3,0),(2,1)])
-    g.add_cluster( '*', 12, [(0,1),(0,2)])
-    g.add_cluster( '-',  2, [(1,1),(1,2)])
-    g.add_cluster( '/',  2, [(3,1),(3,2)])
-    g.add_cluster( '+',  1, [(2,2)])
-    g.add_cluster( '-',  1, [(0,3),(1,3)])
-    g.add_cluster( '-',  1, [(2,3),(3,3)])
-
-    run(g)
-
-def test_b():
-
-    g = Grid(6)
-    g.add_cluster( '*', 36, [(0,0),(1,0),(2,0)])
-    g.add_cluster( '-',  4, [(3,0),(4,0)])
-    g.add_cluster( '+',  4, [(5,0)])
-
-    g.add_cluster( '+', 11, [(0,1),(0,2)])
-    g.add_cluster( '/',  2, [(1,1),(1,2)])
-    g.add_cluster( '/',  2, [(2,1),(3,1)])
-    g.add_cluster( '*', 15, [(4,1),(5,1)])
-    g.add_cluster( '-',  2, [(2,2),(3,2)])
-    g.add_cluster( '-',  1, [(4,2),(4,3)])
-    g.add_cluster( '/',  2, [(5,2),(5,3)])
-
-    g.add_cluster( '-',  4, [(0,3),(1,3)])
-    g.add_cluster( '+', 12, [(2,3),(2,4),(2,5)])
-    g.add_cluster( '/',  2, [(3,3),(3,4)])
-
-    g.add_cluster( '/',  2, [(0,4),(0,5)])
-    g.add_cluster( '/',  3, [(1,4),(1,5)])
-    g.add_cluster( '*', 60, [(4,4),(5,4),(5,5)])
-
-    g.add_cluster( '*',  6, [(3,5),(4,5)])
+#
+# Check that there is only one solution
+#
+    assumption = []
+    for x in range(g.n):
+        for y in range(g.n):
+            for i in range(g.n):
+                var = matrix[(x,y)][i]
+                model = s.h[var]
+                if model:
+                    assumption.append( -var)
+                else:
+                    assumption.append(  var)
 
 
-    run(g)
+    s.add_clause( assumption)
 
+    s.solve()
+    assert s.state == 'UNSAT'
 
-def test_c():
-
-    r = """
-addkoo
-aeekpp
-afhlll
-bfhmmq
-bgiinq
-cgjjnn
-"""
-
-    e = """
-a 36 *
-b  4 -
-c  4 +
-d 11 +
-e  2 /
-f  2 /
-g 15 *
-h  2 -
-i  1 -
-j  2 /
-k  4 -
-l 12 +
-m  2 /
-n 60 *
-o  2 /
-p  3 /
-q  6 *
-"""
-
-
+def parse_and_run( r, e):
     rr = r.split('\n')[1:-1]
 
     g = Grid( len(rr))
@@ -182,12 +129,9 @@ q  6 *
         assert k not in tbl2
         tbl2[k] = (op,value)
 
-    tbl = {}
-
+    tbl = collections.defaultdict( list)
     for (x,q) in enumerate(rr):
         for (y,t) in enumerate(q):
-            if t not in tbl:
-                tbl[t] = []
             tbl[t].append( (x,y))
 
     for k in tbl2.keys():
@@ -198,8 +142,55 @@ q  6 *
         op, value = tbl2[k]
         g.add_cluster( op, value, lst)
 
+#
+# Check that the clusters are connected
+#
+    def check_connected( k, lst):
+        dads = {}
+        for p,q in lst:
+            dads[p],dads[q] = p,q
 
+        def Find( c):
+            while c != dads[c]:
+                c = dads[c]
+            return c
+
+        def Union( p, q):
+            dads[Find(p)] = Find(q)
+
+        for p,q in lst:
+            Union( p, q)
+
+        assert len(set([ Find(p) for (k,p) in dads.items()])) == 1
+
+
+    def X():
+        for x in range(g.n-1):
+            for y in range(g.n):
+                yield (x,y),(x+1,y)
+
+    def Y():
+        for x in range(g.n):
+            for y in range(g.n-1):
+                yield (x,y),(x,y+1)
+
+    raster = {}
+    for (x,q) in enumerate(rr):
+        for (y,t) in enumerate(q):
+            raster[(x,y)] = t
+
+    connections = collections.defaultdict( list)
+    for (p,q) in itertools.chain( X(), Y()):
+        if raster[p] == raster[q]:
+            connections[raster[p]].append( ( p, q))
+
+    for (k,lst) in connections.items():
+        check_connected( k, lst)
+
+
+#
+# Setup and run the solver
+#
     run(g)
-
 
 
