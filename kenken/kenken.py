@@ -89,25 +89,29 @@ class Grid:
                 s.emit_exactly_one( [ matrix[(x,y)][i] for x in range(self.n)])
 
 
+        communitive_ops = {
+            '+': lambda x,y: x+y,
+            '*': lambda x,y: x*y
+        }
+
+        non_communitive_ops = {
+            '-': lambda x,y: x+y,
+            '/': lambda x,y: x*y
+        }
+
         for (op,value,tups) in self.clusters:
-            ok = []
-            for q in itertools.product( self.r, repeat=len(tups)):
-                if op == '+':
-                    if sum(q) == value:
-                        ok.append( q)
-                elif op == '*':
-                    if functools.reduce( lambda x,y: x*y, q) == value:
-                        ok.append( q)
-                elif op == '/':
-                    if q[0] * value == q[1] or q[1] * value == q[0]:
-                        pass
-                        ok.append( q)
-                elif op == '-':
-                    if q[0] + value == q[1] or q[1] + value == q[0]:
-                        ok.append( q)
+            def pred( q):
+                if op in communitive_ops:
+                    f = communitive_ops[op]
+                    return functools.reduce( f, q) == value
+                elif op in non_communitive_ops:
+                    f = non_communitive_ops[op]
+                    return f(q[0], value) == q[1] or f(q[1], value) == q[0]
                 else:
                     assert False, op
 
+            ok = [q for q in itertools.product( self.r, repeat=len(tups))
+                    if pred(q)]
             ands = [s.add_var() for q in ok]
             s.add_clause( ands)
             for q,a in zip(ok,ands):

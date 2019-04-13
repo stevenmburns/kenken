@@ -150,5 +150,56 @@ h 5 +
 """
     Grid.parse_and_run( r, e)
 
+def test_e1():
+
+    r = """
+adfimm
+adfjjn
+adgknn
+begkkn
+behllo
+cchhoo
+"""
+
+    e = """
+a 20 *
+b 2 /
+c 1 -
+d 14 +
+e 2 -
+f 2 /
+g 5 -
+h 11 +
+i 1 +
+j 2 /
+k 10 +
+l 3 -
+m 1 -
+n 120 *
+o 24 *
+"""
+    Grid.parse_and_run( r, e)
+
+def test_f1():
+
+    r = """
+accg
+addg
+bedh
+bffh
+"""
+
+    e = """
+a 3 -
+b 1 -
+c 1 -
+d 9 +
+e 3 +
+f 3 -
+g 1 -
+h 1 -
+"""
+    Grid.parse_and_run( r, e)
+    
 
 
