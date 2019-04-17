@@ -12,7 +12,7 @@ docker run -t kenken_image bash -c "source general/bin/activate && cd kenken && 
 ```
 
 ## Game Specification
-Here is an example game specifications. (You can add a new game as a new test in the `tests` subdirectory.)
+Here is an example game specifications.
 You specify the clusters using a raster of single characters.
 I usually start in the upper left hand corner and then go down and then to the right.
 Then you specify the mathematical constraint for that cluster using a space separated triple:
@@ -21,11 +21,9 @@ Then you specify the mathematical constraint for that cluster using a space sepa
 
 For a singleton cluster, use either `+` or `*` as the operator. (See `d` below.)
 ```python
-from kenken.kenken import *
+from kenken.kenken import Grid
 
-def test_tuesday_large():
-
-    r = """
+r = """
 aefiim
 aefjmm
 bbfjnp
@@ -34,7 +32,7 @@ cchkoo
 dchlll
 """
 
-    e = """
+e = """
 a 2 /
 b 60 *
 c 8 *
@@ -53,5 +51,15 @@ o 3 /
 p 1 -
 """
 
-    Grid.parse_and_run( r, e)
+Grid.parse_and_run( r, e)
+```
+This will return the result:
+```
+
+361425
+623154
+154263
+435612
+246531
+512346
 ```
