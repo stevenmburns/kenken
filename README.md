@@ -15,7 +15,7 @@ docker run -t kenken_image bash -c "source general/bin/activate && cd kenken && 
 Here is an example game specifications. (You can add a new game as a new test in the `tests` subdirectory.)
 You specify the clusters using a raster of single characters.
 I usually start in the upper left hand corner and then go down and then to the right.
-Then you specify the mathematical constraint for that cluster using the space separated triple:
+Then you specify the mathematical constraint for that cluster using a space separated triple:
 
 `<cluster character> <number> <operator>`. 
 
