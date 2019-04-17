@@ -34,10 +34,23 @@ class Grid:
         return list( range(1,self.n+1))
     
     def clusters_connected( self):
-        def check_connected( k, lst):
+        """
+        Check if raster contains only h/v adjacent connections
+        Illegal
+        ac 
+        ba
+
+        Legal
+        ab
+        aa
+
+        Solution: build a graph (edges say vertices are locally adjacent)
+        and use a cheap Union-Find (no path compression) to check connectivity
+"""
+        def check_connected( k, vertices, edges):
             dads = {}
-            for p,q in lst:
-                dads[p],dads[q] = p,q
+            for p in vertices:
+                dads[p] = p
 
             def Find( c):
                 while c != dads[c]:
@@ -47,10 +60,15 @@ class Grid:
             def Union( p, q):
                 dads[Find(p)] = Find(q)
 
-            for p,q in lst:
+            for p,q in edges:
                 Union( p, q)
 
-            assert len(set([ Find(p) for (k,p) in dads.items()])) == 1
+            stuff = set([ Find(p) for (k,p) in dads.items()])
+            assert len(stuff) == 1, "More than one partition"
+
+        vertices = collections.defaultdict( list)
+        for p in itertools.product( range(self.n), repeat=2):
+            vertices[self.raster[p]].append( p)
 
         def X():
             for x in range(self.n-1):
@@ -67,8 +85,8 @@ class Grid:
             if self.raster[p] == self.raster[q]:
                 connections[self.raster[p]].append( ( p, q))
 
-        for (k,lst) in connections.items():
-            check_connected( k, lst)
+        for (k,v) in vertices.items():
+            check_connected( k, v, connections[k])
 
     def run( self):
         self.semantic()

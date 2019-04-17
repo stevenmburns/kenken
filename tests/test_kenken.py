@@ -179,7 +179,7 @@ n 120 *
 o 24 *
 """
     Grid.parse_and_run( r, e)
-
+ 
 def test_f1():
 
     r = """
@@ -200,6 +200,70 @@ g 1 -
 h 1 -
 """
     Grid.parse_and_run( r, e)
-    
+
+def test_sunday_large():
+
+    r = """
+agggoou
+bbilppu
+ccillps
+ddimlss
+eejmrrs
+fhjnntt
+ffkkqqv
+"""
+
+    e = """
+a 7 +
+b 2 -
+c 5 -
+d 3 -
+e 2 -
+f 8 +
+g 72 *
+h 1 +
+i 18 +
+j 2 /
+k 2 /
+l 9 +
+m 1 -
+n 4 -
+o 3 -
+p 14 *
+q 1 -
+r 4 -
+s 144 *
+t 30 *
+u 3 -
+v 7 +
+"""
+    Grid.parse_and_run( r, e)
+
+def test_sunday_small():
+
+    r = """
+addhh
+aeehk
+affik
+bbfjl
+cggjl
+"""
+
+    e = """
+a 9 +
+b 2 /
+c 5 +
+d 4 -
+e 1 -
+f 80 *
+g 2 -
+h 60 *
+i 1 +
+j 1 -
+k 3 +
+l 1 -
+"""
+    Grid.parse_and_run( r, e)
+
 
 
