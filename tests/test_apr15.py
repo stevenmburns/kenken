@@ -110,3 +110,128 @@ p 1 -
 """
 
     Grid.parse_and_run( r, e)
+
+
+def test_saturday_large():
+
+    r = """
+adhiin
+adhjln
+aeejlo
+bbejmo
+cfffmp
+cggkkp
+"""
+
+    e = """
+a 12 +
+b 3 -
+c 2 /
+d 1 -
+e 10 *
+f 15 +
+g 3 -
+h 6 *
+i 2 /
+j 24 *
+k 2 /
+l 15 *
+m 2 -
+n 3 -
+o 3 /
+p 2 -
+"""
+
+    Grid.parse_and_run( r, e)
+
+
+def test_saturday_small():
+
+    r = """
+adff
+aeef
+bbef
+ccgg
+"""
+
+    e = """
+a 5 +
+b 4 +
+c 5 +
+d 4 +
+e 9 +
+f 8 +
+g 5 +
+"""
+
+    Grid.parse_and_run( r, e)
+
+
+def test_sunday_large():
+
+    r = """
+aeeenno
+affjooo
+bgjjpss
+bgklqtv
+ccklqtw
+dhhmmuw
+diimrrw
+"""
+
+    e = """
+a 5 -
+b 2 -
+c 6 +
+d 3 /
+e 90 *
+f 1 -
+g 2 -
+h 2 -
+i 1 -
+j 10 +
+k 3 -
+l 5 -
+m 13 +
+n 2 /
+o 9 +
+p 7 +
+q 2 /
+r 1 -
+s 3 -
+t 2 /
+u 7 +
+v 3 +
+w 18 +
+"""
+
+    Grid.parse_and_run( r, e)
+
+def test_sunday_small():
+
+    r = """
+aagii
+bdhjj
+behkm
+ceekm
+cffll
+"""
+
+    e = """
+a 3 -
+b 2 /
+c 2 -
+d 5 +
+e 7 +
+f 2 -
+g 5 +
+h 6 *
+i 1 -
+j 5 +
+k 2 -
+l 2 /
+m 4 -
+"""
+
+    Grid.parse_and_run( r, e)
+
